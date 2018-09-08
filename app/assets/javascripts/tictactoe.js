@@ -122,11 +122,9 @@ var resetBoard = function() {
 
 var attachListeners = function() {
   $("td").click(function(){
-  if(this.innerHTML === "" && !checkWinner()){
-    doTurn(this)
-  } else{
-      alert("can't go there");
-    };
+    if(this.innerHTML === "" && !checkWinner()){
+      doTurn(this)
+    }
   });
 
   $("#save").click(function(){
@@ -136,7 +134,7 @@ var attachListeners = function() {
   $("#clear").click(function(){
     $("td").empty()
     turn = 0;
-    currentGame = 0
+    gameId = 0
   });
 
   $("#previous").click(function(){
