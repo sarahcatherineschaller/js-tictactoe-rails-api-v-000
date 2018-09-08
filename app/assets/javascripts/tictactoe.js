@@ -22,6 +22,4 @@ var updateState = (square) => $(square).text(player());
 
 var setMessage = (string) => $('#message').text(string);
 
-var checkWinner = () => {
-
-}
+var checkWinner = () => 
