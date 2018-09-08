@@ -1,6 +1,14 @@
 $(function () {
-
+  attachListeners();
 })
+
+var attachListeners = function() {
+  $('td').click(function(event) {
+    doTurn(event);
+  })
+// saveGame - home/index
+// loadGames - home/index
+}
 
 const WIN_COMBOS = [
   [0, 1, 2],
@@ -56,5 +64,5 @@ var doTurn = function(event) {
 }
 
 var saveGame = function() {
- 
+
 }
