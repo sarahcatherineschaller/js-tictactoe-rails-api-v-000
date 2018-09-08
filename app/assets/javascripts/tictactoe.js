@@ -116,7 +116,7 @@ function showPreviousGames() {
 
 var resetBoard = function() {
   turn = 0;
-  currentGame = 0;
+  gameId = 0;
   $('td').empty();
 }
 
