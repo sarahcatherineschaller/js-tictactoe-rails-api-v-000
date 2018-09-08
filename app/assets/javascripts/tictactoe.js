@@ -65,7 +65,7 @@ function saveGame() {
 
   gameData = { state };
 
-  if (currentGame) {
+  if (gameId) {
     $.ajax({
       type: 'PATCH',
       url: "/games" + gameId, data: gameData
