@@ -121,18 +121,25 @@ var resetBoard = function() {
 }
 
 var attachListeners = function() {
-  $('td').on('click', function() {
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this);
-    }
-  })
-  $('#save').on('click', function() {
-    saveGame();
-  })
-  $('#previous').on('click', function() {
-    loadGames();
-  })
-  $('#clear').on('click', function() {
-    resetBoard();
-  })
-}
+  $("td").click(function(){
+  if(this.innerHTML === "" && !checkWinner()){
+    doTurn(this)
+  } else{
+      alert("can't go there");
+    };
+  });
+
+  $("#save").click(function(){
+    saveGame()
+  });
+
+  $("#clear").click(function(){
+    $("td").empty()
+    turn = 0;
+    currentGame = 0
+  });
+
+  $("#previous").click(function(){
+    showPreviousGames()
+  });
+};
