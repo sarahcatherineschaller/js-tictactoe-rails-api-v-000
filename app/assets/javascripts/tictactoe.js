@@ -2,13 +2,6 @@ $(function () {
   attachListeners();
 })
 
-var attachListeners = function() {
-  $('td').click(function(event) {
-    doTurn(event);
-  })
-// saveGame - home/index
-// loadGames - home/index
-}
 
 const WIN_COMBOS = [
   [0, 1, 2],
@@ -50,19 +43,42 @@ var checkWinner = function() {
   return winner;
 };
 
-var doTurn = function(event) {
-  updateState(event)
-  if (checkWinner() || (turn === 9)) {
-    saveGame(true);
+var doTurn = function(square) {
+  updateState(square)
+  turn++;
+  if (checkWinner()) {
+    saveGame();
     resetBoard();
-    if (turn === 9) {
-      setMessage("Tie game.");
-    }
-  } else {
-    turn++;
+  } else if (turn === 9) {
+    setMessage("Tie game.");
+    saveGame();
+    resetBoard();
   }
 }
 
 var saveGame = function() {
 
+}
+
+var resetBoard = function() {
+  turn = 0;
+  currentGame = 0;
+  $('td').empty();
+}
+
+var attachListeners = function() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  })
+  $('#save').on('click', function() {
+    saveGame();
+  })
+  $('#previous').on('click', function() {
+    loadGames();
+  })
+  $('#clear').on('click', function() {
+    resetBoard();
+  })
 }
