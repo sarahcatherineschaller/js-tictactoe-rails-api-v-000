@@ -2,25 +2,6 @@ $(function () {
   attachListeners();
 })
 
-<<<<<<< HEAD
-=======
-var attachListeners = function() {
-  $('td').on('click', function() {
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this);
-    }
-  })
-  $('#save').on('click', function() {
-    saveGame();
-  })
-  $('#previous').on('click', function() {
-    loadGames();
-  })
-  $('#clear').on('click', function() {
-    resetBoard();
-  })
-}
->>>>>>> ac10d56679cd0e4d97afed41039110acf4963a91
 
 const WIN_COMBOS = [
   [0, 1, 2],
@@ -34,7 +15,7 @@ const WIN_COMBOS = [
 ]
 
 var turn = 0;
-var currentGame = 0;
+var gameId = 0;
 
 var player = function() {
   return turn % 2 ? 'O' : 'X';
@@ -62,13 +43,8 @@ var checkWinner = function() {
   return winner;
 };
 
-<<<<<<< HEAD
 var doTurn = function(square) {
   updateState(square)
-=======
-var doTurn = function(event) {
-  updateState(event)
->>>>>>> ac10d56679cd0e4d97afed41039110acf4963a91
   turn++;
   if (checkWinner()) {
     saveGame();
@@ -80,13 +56,63 @@ var doTurn = function(event) {
   }
 }
 
-var saveGame = function() {
+function saveGame() {
+  let state = [];
+
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  gameData = { state };
+
+  if (currentGame) {
+    $.ajax({
+      type: 'PATCH',
+      url: "/games" + gameId, data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+      gameId = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => showPreviousGames(game.data.id));
+    });
+  }
 }
 
-var resetBoard = function() {
-  turn = 0;
-  $('td').empty();
-}
+function showPreviousGames() {
+ $('#games').empty();
+  $.get('/games', (savedGames) => {
+  if (savedGames) {
+    savedGames.data.forEach(function(game) {
+    $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+
+    $(`#gameid-${game.id}`).click(function() {
+
+      $.get( `/games/${game.id}`, function(dataResult) {
+
+        const id = dataResult.data.id;
+        const gameState = dataResult.data.attributes.state;
+
+        let index = 0;
+
+          for (let y = 0; y < 3; y++) {
+            for (let x = 0; x < 3; x++) {
+
+             document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = gameState[index];
+
+          index++;
+
+          turn = gameState.join('').length;
+          gameId = id;
+            };
+          };
+        });
+      });
+     });
+   };
+ });
+};
+
 
 var resetBoard = function() {
   turn = 0;
