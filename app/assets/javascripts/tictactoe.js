@@ -2,6 +2,25 @@ $(function () {
   attachListeners();
 })
 
+<<<<<<< HEAD
+=======
+var attachListeners = function() {
+  $('td').on('click', function() {
+    if (!$.text(this) && !checkWinner()) {
+      doTurn(this);
+    }
+  })
+  $('#save').on('click', function() {
+    saveGame();
+  })
+  $('#previous').on('click', function() {
+    loadGames();
+  })
+  $('#clear').on('click', function() {
+    resetBoard();
+  })
+}
+>>>>>>> ac10d56679cd0e4d97afed41039110acf4963a91
 
 const WIN_COMBOS = [
   [0, 1, 2],
@@ -43,8 +62,13 @@ var checkWinner = function() {
   return winner;
 };
 
+<<<<<<< HEAD
 var doTurn = function(square) {
   updateState(square)
+=======
+var doTurn = function(event) {
+  updateState(event)
+>>>>>>> ac10d56679cd0e4d97afed41039110acf4963a91
   turn++;
   if (checkWinner()) {
     saveGame();
@@ -57,7 +81,11 @@ var doTurn = function(square) {
 }
 
 var saveGame = function() {
+}
 
+var resetBoard = function() {
+  turn = 0;
+  $('td').empty();
 }
 
 var resetBoard = function() {
