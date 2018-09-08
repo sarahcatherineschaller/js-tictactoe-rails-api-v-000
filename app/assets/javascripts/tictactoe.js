@@ -15,7 +15,7 @@ const WIN_COMBOS = [
 ]
 
 var turn = 0;
-var currentGame = 0;
+var gameId = 0;
 
 var player = function() {
   return turn % 2 ? 'O' : 'X';
@@ -56,29 +56,88 @@ var doTurn = function(square) {
   }
 }
 
-var saveGame = function() {
+function saveGame() {
+  let state = [];
 
+  $('td').text((index, square) => {
+    state.push(square);
+  });
+
+  gameData = { state };
+
+  if (gameId) {
+    $.ajax({
+      type: 'PATCH',
+      url: "/games/" + gameId, data: gameData
+    });
+  } else {
+    $.post('/games', gameData, function(game) {
+      gameId = game.data.id;
+      $('#games').append(`<button id="gameid-${game.data.id}">${game.data.id}</button><br>`);
+      $("#gameid-" + game.data.id).on('click', () => showPreviousGames(game.data.id));
+    });
+  }
 }
+
+function showPreviousGames() {
+ $('#games').empty();
+  $.get('/games', (savedGames) => {
+  if (savedGames) {
+    savedGames.data.forEach(function(game) {
+    $('#games').append(`<button id="gameid-${game.id}">${game.id}</button><br>`);
+
+    $(`#gameid-${game.id}`).click(function() {
+
+      $.get( `/games/${game.id}`, function(dataResult) {
+
+        const id = dataResult.data.id;
+        const gameState = dataResult.data.attributes.state;
+
+        let index = 0;
+
+          for (let y = 0; y < 3; y++) {
+            for (let x = 0; x < 3; x++) {
+
+             document.querySelector(`[data-x="${x}"][data-y="${y}"]`).innerHTML = gameState[index];
+
+          index++;
+
+          turn = gameState.join('').length;
+          gameId = id;
+            };
+          };
+        });
+      });
+     });
+   };
+ });
+};
+
 
 var resetBoard = function() {
   turn = 0;
-  currentGame = 0;
+  gameId = 0;
   $('td').empty();
 }
 
 var attachListeners = function() {
-  $('td').on('click', function() {
-    if (!$.text(this) && !checkWinner()) {
-      doTurn(this);
+  $("td").click(function(){
+    if(this.innerHTML === "" && !checkWinner()){
+      doTurn(this)
     }
-  })
-  $('#save').on('click', function() {
-    saveGame();
-  })
-  $('#previous').on('click', function() {
-    loadGames();
-  })
-  $('#clear').on('click', function() {
-    resetBoard();
-  })
-}
+  });
+
+  $("#save").click(function(){
+    saveGame()
+  });
+
+  $("#clear").click(function(){
+    $("td").empty()
+    turn = 0;
+    gameId = 0
+  });
+
+  $("#previous").click(function(){
+    showPreviousGames()
+  });
+};
